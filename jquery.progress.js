@@ -1,51 +1,88 @@
 ;(function($) {
 
-    $.stream = {
-        iterations: 0,
-        maxValue: null,
-        stream: null
-    };
-
     $.fn.extend({
-        Progress: function(options, arg) {
+        Progress: function(options) {
             if (options && typeof(options) == 'object') {
                 options = $.extend({}, $.Progress.defaults, options);
             }
 
             this.each(function() {
-                new $.Progress(this, options, arg );
+                new $.Progress(this, options);
             });
 
             return;
         }
     });
 
+    $.stream = {
+        iterations: 0,
+        maxValue: null,
+        stream: null
+    };
 
-    $.Progress = function(elem, option, arg) {
+    $.messages = {
+        couldNotEstablishConnection: '[jQuery.Progress] Error: could not establish the connection.',
+        urlIsMissing: '[jQuery.Progress] Error: you must provide a string named "url" as an option that contains the URL to fetch.',
+        sseNotSupported: '[jQuery.Progress] Error: SSE is not supported.',
+        notAnInteger: function(data) {
+            return '[jQuery.Progress] Error: the server must send back any positive integer (we received: "' + data + '"). Closing the connection.';
+        },
+        noDataReceived: '[jQuery.Progress] Error: no data was received from the server. Are you sure the server-side output starts with "data:"?',
+    };
+
+    $.Progress = function(elem, option) {
+
+
         var options  = option || $.Progress.defaults
             , isInit = $.Progress.init(options)
             , close;
 
+        if(options.debug) console.log($(elem));
+
         if(isInit === true) {
             $.stream.stream = $.Progress.connect(options);
 
-            $.stream.stream.onmessage = function(e) {
+            if(typeof($.stream.stream) === 'object') {
+                $.stream.stream.onopen = function(e) {
+                    if(options.debug) console.log(e);
+                };
+                if(options.debug) console.log('$.stream.stream is an object');
+                if(options.debug) console.log(typeof($.stream.stream.onmessage));
+
+                $.stream.stream.onmessage = function(e) {
+
+                    if(options.debug) console.log(e);
+                    if(e.data === null) {
+                        console.error($.messages.noDataReceived);
+                    }
+
+                    if(options.debug) console.log($.stream.stream);
+
+                    if(options.debug) console.log('iterations ------> '+ $.stream.iterations);
+                    if(options.debug) console.log('data: ------>'+ e.data);
+
+                    if($.stream.iterations == $.stream.maxValue) {
+                        $.Progress.grow(elem, options, e.data, function() {
+                            $.Progress.finish(elem, options);
+                            close = $.Progress.close();
+                        });
+                    } else {
+                        $.Progress.grow(elem, options, e.data);
+                    }
+
+                    $.stream.iterations++;
 
 
-                if($.stream.iterations == $.stream.maxValue) {
-                    $.Progress.grow(elem, options, e.data, function() {
-                        $.Progress.finish(elem, options);
-                        close = $.Progress.close();
-                    });
-                } else {
-                    $.Progress.grow(elem, options, e.data);
-                }
+                };
+            } else {
+                console.error($.messages.couldNotEstablishConnection)
+            }
 
-                $.stream.iterations++;
-            };
         } else {
             console.error(isInit);
         }
+
+
 
         return;
     };
@@ -56,8 +93,9 @@
      * @returns {boolean|string}
      */
     $.Progress.init = function(options) {
+        if(options.debug) console.log('init() called');
         if(!options.url || typeof(options.url) != 'string')
-            return 'jQuery.Progress Error: you must provide a string named "url" as an option that contains the URL to fetch.';
+            return $.messages.urlIsMissing;
 
         return true;
     };
@@ -69,10 +107,9 @@
      */
     $.Progress.connect = function(options) {
         if(typeof(EventSource) === 'undefined') {
-            console.error('jQuery.Progress Error: SSE is not supported.');
+            console.error($.messages.sseNotSupported);
             return false;
         }
-
         return new EventSource(options.url);
     };
 
@@ -84,6 +121,12 @@
      * @param callback
      */
     $.Progress.grow = function(elem, options, data, callback) {
+        if(parseInt(data) != data) {
+            console.error($.messages.notAnInteger(data));
+            $.Progress.close();
+            return;
+        }
+
         if($.stream.iterations == 0) {
             $.stream.maxValue = data;
         } else {
@@ -117,6 +160,7 @@
      * @param options
      */
     $.Progress.finish = function(elem, options) {
+        if(options.debug) console.log('class added');
         $(elem).addClass(options.classes.success);
     };
 
@@ -126,6 +170,7 @@
      */
     $.Progress.defaults = {
         animationDuration: 1000,
+        debug: false,
         classes: {
             success: 'progress-bar-success',
             error: 'progress-bar-error',
