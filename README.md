@@ -47,12 +47,14 @@ Therefore, here's an exemple of what to do in `PHP`:
 <?php
 header('Content-Type: text/event-stream'); // mandatory headers for SSE to work
 header('Cache-Control: no-cache'); // mandatory headers for SSE to work
-$max = 15; // set the maximum value
+$max = 15; // sets the maximum value
 echo 'data:'.$max."\n\n"; // outputs the maximum value as the first event
 flush(); // flushes the buffer
+ob_flush(); // flushes the buffer
 for($i = 1; $i <= $max; $i++) { // loop initialization
     echo 'data:'.$i."\n\n"; // server's output
-    flush(); // flushes the buffer
+	flush(); // flushes the buffer
+	ob_flush(); // flushes the buffer
     usleep(500000); // sleep 0.5s
 }
 ```
