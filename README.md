@@ -26,6 +26,7 @@ The syntax of `jQuery.Progress`'s initialization is the following:
 $('.progress-bar').Progress({
     url: '/event-source',
     animationDuration: 1000,
+    debug: false,
     percentSelector: '#progress-percent',
     classes: {
         success: 'progress-bar-success',
@@ -62,6 +63,7 @@ Name | Type | Default | Description
 ------------ | ------------- | ------------- | -------------
 url | string | *(none)* | The URL to fetch the data from.
 animationDuration | integer | 0 | The duration (in `ms`) of the animation for each step
+debug | boolean | false | Set it to `true` so debug messages appear in the console
 percentSelector | string | *(none)* | A string that represents the jQuery selector where the value (in `%`) will be updated on each step
 classes | object | *(none)* | An object containing all three different classes based on different events: `{success: '', error: '', pending: ''}`
 
