@@ -5,6 +5,8 @@ A simple jQuery plugin to animate a Bootstrap progress bar based on [**S**erver 
 `jQuery.Progress` requires the latest version of [`jQuery`](https://jquery.com/download/).
 
 ## Usage
+* **HTML**
+
 By default, this plugin works great with [Bootstrap progress bars](http://getbootstrap.com/components/#progress) but it can handle any DOMElement. The purpose is to animate the element's CSS property `width` from `0%` to `100%` based on what the back-end script sends back.
 ```html
 <div class="progress">
@@ -14,8 +16,10 @@ By default, this plugin works great with [Bootstrap progress bars](http://getboo
 </div>
 ```
 
+* **jQuery**
+
 The syntax of `jQuery.Progress`'s initialization is the following:
-````javascript
+```javascript
 $('.progress-bar').Progress({
     url: '/event-source',
     animationDuration: 1000,
@@ -27,8 +31,11 @@ $('.progress-bar').Progress({
     }
 });
 ```
+
+* **Back-end script**
+
 The back-end script can be developed in whatever language you feel the most comfortable with. The only requirements here are:
-* the script must output the following string: `data: incrementingIntegern\n`.
+* the script must output the following string: `data: incrementingInteger\n\n`.
 * the first event that fires needs to outputs the maximum value as such: `data: maxInteger\n\n` (this will be used to calculate to progress percentage upon first event)
 Therefore, here's an exemple of what to do in `PHP`:
 ```PHP
