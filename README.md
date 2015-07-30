@@ -2,7 +2,7 @@
 A simple jQuery plugin to make any progress bar go live based on [**S**erver **S**ent **E**vents](http://www.w3.org/TR/2011/WD-eventsource-20110208). The purpose is to animate the element's CSS property `width` from `0%` to `100%` based on what the back-end script sends back.
 
 ## Releases
-* **v1.0** - 30/07/0215
+* **v0.1** - 30/07/0215
 
 ## Requirements
 `jQuery.Progress` requires the latest version of [`jQuery`](https://jquery.com/download/).
