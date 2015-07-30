@@ -38,7 +38,7 @@ $('.progress-bar').Progress({
 * **Back-end script**
 
 The back-end script can be developed in whatever language you feel the most comfortable with. The only requirements here are:
-* the script must output the following string: `data: incrementingInteger\n\n`.
+* the script must output the following string: `data: incrementingInteger\n\n` every `X` second.
 * the first event that fires needs to outputs the maximum value as such: `data: maxInteger\n\n` (this will be used to calculate to progress percentage upon first event)
 
 Therefore, here's an exemple of what to do in `PHP`:
