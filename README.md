@@ -60,15 +60,18 @@ Therefore, here's an exemple of what to do in `PHP`:
 <?php
 header('Content-Type: text/event-stream'); // mandatory headers for SSE to work
 header('Cache-Control: no-cache'); // mandatory headers for SSE to work
-$max = 15; // sets the maximum value
-echo 'data:' . $max . "\n\n"; // outputs the maximum value as the first event
+$total = 15; // sets the maximum value (can be '$total = count($_FILES);' for instance)
+echo 'data:' . $total . "\n\n"; // outputs the total as the first event so percentage get calculated
 flush(); // flushes the buffer
 ob_flush(); // flushes the buffer
-for($i = 1; $i <= $max; $i++) { // loop initialization
-    echo 'data:' . $i . "\n\n"; // server's output
-	flush(); // flushes the buffer
-	ob_flush(); // flushes the buffer
-    usleep(500000); // sleep 0.5s
+for($i = 1; $i <= $max; $i++) { // loop initialization (can be 'foreach($_FILES as $key => $file) {}')
+
+    // upload, move, rename each of your $file
+
+    echo 'data:' . $i . "\n\n"; // server's output (can be '$key')
+    flush(); // flushes the buffer
+    ob_flush(); // flushes the buffer
+    usleep(500000); // sleep 0.5s for the exemple purpose
 }
 ```
 
