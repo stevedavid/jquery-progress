@@ -65,9 +65,7 @@ echo 'data:' . $total . "\n\n"; // outputs the total as the first event so perce
 flush(); // flushes the buffer
 ob_flush(); // flushes the buffer
 for($i = 1; $i <= $max; $i++) { // loop initialization (can be 'foreach($_FILES as $key => $file) {}')
-
     // upload, move, rename each of your $file
-
     echo 'data:' . $i . "\n\n"; // server's output (can be '$key')
     flush(); // flushes the buffer
     ob_flush(); // flushes the buffer
