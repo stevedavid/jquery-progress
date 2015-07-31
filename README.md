@@ -9,7 +9,7 @@ A simple light-weight jQuery plugin that makes any progress bar go live based on
 
 ## Features
 * supports SSE
-* disables transition effect on element avoid compatibility problems
+* disables transition effect on element to avoid compatibility problems
 * uses `.animate()` with callback function
 * calculates the progression percentage
 * return both total and absolute progression
