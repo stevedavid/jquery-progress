@@ -138,10 +138,12 @@
             }
 
             $(elem).animate({
-                width: percent
-            }, options.animationDuration, function() {
-                if(callback && typeof(callback) == 'function') callback();
-
+                width: percent,
+            }, {
+                duration: options.animationDuration,
+                complete: function() {
+                    if(callback && typeof(callback) == 'function') callback();
+                }
             });
 
         }
