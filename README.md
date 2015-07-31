@@ -36,7 +36,7 @@ $('.progress-bar').Progress({
         error: 'progress-bar-error',
         pending: 'progress-bar-warning'
     },
-    getDigits: function(data) {
+    getData: function(data) {
     	$('h2').html(data.i + ' out of ' + data.total);
     }
 });
@@ -74,7 +74,7 @@ animationDuration | integer | 0 | The duration (in `ms`) of the animation for ea
 debug | boolean | false | Set it to `true` so debug messages appear in the console
 percentSelector | string | *(none)* | A string that represents the jQuery selector where the value (in `%`) will be updated on each step
 classes | object | *(none)* | An object containing all three different classes based on different events: `{success: '', error: '', pending: ''}`
-getDigits | function | `return data;` | Returns an object populated with two data: `{i: i, total: total}` where `i` will be the number outputted by the server and `total` the total as retrieved when first event fired.
+getData | function | `return data;` | Returns an object populated with two data: `{i: i, total: total}` where `i` will be the number outputted by the server and `total` the total as retrieved when first event fired.
 
 ## Licence
 Copyright (c) 2015 Steve David
