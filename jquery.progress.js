@@ -130,7 +130,7 @@
             $.stream.maxValue = data;
         } else {
 
-            options.getDigits(data, $.stream.maxValue);
+            options.getData({i: data, total: $.stream.maxValue});
             var percent = Math.round(data / $.stream.maxValue * 100) + '%';
             
             if(options.percentSelector && typeof(options.percentSelector) == 'string') {
@@ -174,7 +174,7 @@
     };
 
     $.Progress.cssTransition = function(elem, isActive) {
-        
+
         var value = (isActive ? 'width 0.6s ease' : 'none');
         $(elem).css({
             '-webkit-transition': value,
@@ -196,8 +196,8 @@
             error: 'progress-bar-error',
             pending: 'progress-bar-pending'
         },
-        getDigits: function(i) {
-            return i;
+        getData: function(data) {
+            return data;
         }
     };
 
