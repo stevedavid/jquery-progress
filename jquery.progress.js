@@ -32,57 +32,48 @@
 
     $.Progress = function(elem, option) {
 
-
         var options  = option || $.Progress.defaults
             , isInit = $.Progress.init(options)
             , close;
-
-        if(options.debug) console.log($(elem));
 
         if(isInit === true) {
             $.stream.stream = $.Progress.connect(options);
 
             if(typeof($.stream.stream) === 'object') {
-                $.stream.stream.onopen = function(e) {
-                    if(options.debug) console.log(e);
-                };
-                if(options.debug) console.log('$.stream.stream is an object');
-                if(options.debug) console.log(typeof($.stream.stream.onmessage));
+
+                $.Progress.cssTransition(elem, false);       
 
                 $.stream.stream.onmessage = function(e) {
 
-                    if(options.debug) console.log(e);
                     if(e.data === null) {
                         console.error($.messages.noDataReceived);
                     }
 
-                    if(options.debug) console.log($.stream.stream);
-
-                    if(options.debug) console.log('iterations ------> '+ $.stream.iterations);
-                    if(options.debug) console.log('data: ------>'+ e.data);
-
                     if($.stream.iterations == $.stream.maxValue) {
+
                         $.Progress.grow(elem, options, e.data, function() {
                             $.Progress.finish(elem, options);
                             close = $.Progress.close();
+                            // $.Progress.cssTransition(elem, true);
                         });
+
                     } else {
+
                         $.Progress.grow(elem, options, e.data);
+
                     }
 
                     $.stream.iterations++;
 
-
                 };
+
             } else {
-                console.error($.messages.couldNotEstablishConnection)
+                console.error($.messages.couldNotEstablishConnection);
             }
 
         } else {
             console.error(isInit);
         }
-
-
 
         return;
     };
@@ -93,9 +84,10 @@
      * @returns {boolean|string}
      */
     $.Progress.init = function(options) {
-        if(options.debug) console.log('init() called');
-        if(!options.url || typeof(options.url) != 'string')
+
+        if(!options.url || typeof(options.url) != 'string') {
             return $.messages.urlIsMissing;
+        }
 
         return true;
     };
@@ -106,10 +98,14 @@
      * @returns {*}
      */
     $.Progress.connect = function(options) {
+
         if(typeof(EventSource) === 'undefined') {
+
             console.error($.messages.sseNotSupported);
             return false;
+
         }
+
         return new EventSource(options.url);
     };
 
@@ -121,22 +117,33 @@
      * @param callback
      */
     $.Progress.grow = function(elem, options, data, callback) {
+
         if(parseInt(data) != data) {
+
             console.error($.messages.notAnInteger(data));
             $.Progress.close();
             return;
+
         }
 
         if($.stream.iterations == 0) {
             $.stream.maxValue = data;
         } else {
+
+            options.getDigits(data, $.stream.maxValue);
             var percent = Math.round(data / $.stream.maxValue * 100) + '%';
+            
             if(options.percentSelector && typeof(options.percentSelector) == 'string') {
                 $(options.percentSelector).text(percent);
             }
+
             $(elem).animate({
                 width: percent
-            }, options.animationDuration, callback);
+            }, options.animationDuration, function() {
+                if(callback && typeof(callback) == 'function') callback();
+
+            });
+
         }
     };
 
@@ -146,9 +153,12 @@
      * @returns {boolean}
      */
     $.Progress.close = function() {
+
         if($.stream.stream) {
+
             $.stream.stream.close();
             return true
+
         }
 
         return false;
@@ -160,8 +170,18 @@
      * @param options
      */
     $.Progress.finish = function(elem, options) {
-        if(options.debug) console.log('class added');
         $(elem).addClass(options.classes.success);
+    };
+
+    $.Progress.cssTransition = function(elem, isActive) {
+        
+        var value = (isActive ? 'width 0.6s ease' : 'none');
+        $(elem).css({
+            '-webkit-transition': value,
+            '-o-transition': value,
+            'transition': value
+        });
+
     };
 
     /**
@@ -175,6 +195,9 @@
             success: 'progress-bar-success',
             error: 'progress-bar-error',
             pending: 'progress-bar-pending'
+        },
+        getDigits: function(i) {
+            return i;
         }
     };
 
