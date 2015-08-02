@@ -1,3 +1,10 @@
+/*!
+	jQuery.Progress v0.1
+	(c) 2015 Steve David <http://www.steve-david.com>
+	
+	MIT-style license.
+*/
+
 ;(function($) {
 
     $.fn.extend({
